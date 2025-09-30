@@ -1,0 +1,344 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Технические работы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+        }
+
+        /* Фон с дверями */
+        .doors-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.4;
+            background-image: 
+                linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 20%, #1a1a1a 40%, #2a2a2a 60%, #1a1a1a 80%, #2a2a1a 100%),
+                repeating-linear-gradient(90deg, transparent 0%, transparent 8%, #333 8%, #333 9%, transparent 9%, transparent 17%),
+                repeating-linear-gradient(0deg, transparent 0%, transparent 15%, rgba(100,100,100,0.1) 15%, rgba(100,100,100,0.1) 16%, transparent 16%, transparent 20%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 100% 100%, 100% 100%, 200px 200px;
+        }
+
+        /* Реалистичные двери */
+        .realistic-doors {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 400px;
+            z-index: 2;
+            perspective: 1200px;
+        }
+
+        .door-real {
+            position: absolute;
+            width: 298px;
+            height: 100%;
+            background: 
+                linear-gradient(180deg, #3a2a1a 0%, #2a1a0a 50%, #1a0a00 100%),
+                repeating-linear-gradient(90deg, transparent 0%, rgba(100,80,60,0.1) 1%, transparent 2%),
+                repeating-linear-gradient(90deg, transparent 0%, transparent 48px, rgba(0,0,0,0.3) 48px, rgba(0,0,0,0.3) 50px, transparent 50px, transparent 98px),
+                repeating-linear-gradient(0deg, transparent 0%, transparent 98px, rgba(0,0,0,0.2) 98px, rgba(0,0,0,0.2) 100px, transparent 100px, transparent 198px);
+            border: 3px solid #1a0a00;
+            box-shadow: 
+                inset 0 0 50px rgba(0,0,0,0.5),
+                inset 10px 0 20px rgba(0,0,0,0.3),
+                inset -10px 0 20px rgba(0,0,0,0.3);
+            transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .door-real::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(90deg, transparent 0%, transparent 20%, rgba(150,150,150,0.1) 20%, rgba(150,150,150,0.1) 22%, transparent 22%, transparent 25%),
+                radial-gradient(circle at 25px 50px, rgba(200,200,200,0.8) 2px, transparent 3px),
+                radial-gradient(circle at 25px 150px, rgba(200,200,200,0.8) 2px, transparent 3px),
+                radial-gradient(circle at 25px 250px, rgba(200,200,200,0.8) 2px, transparent 3px),
+                radial-gradient(circle at 25px 350px, rgba(200,200,200,0.8) 2px, transparent 3px);
+            opacity: 0.6;
+        }
+
+        .door-left-real {
+            left: 0;
+            transform-origin: left center;
+            border-right: 2px solid #0a0a0a;
+        }
+
+        .door-right-real {
+            right: 0;
+            transform-origin: right center;
+            border-left: 2px solid #0a0a0a;
+        }
+
+        .door-handle-real {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 100px;
+            background: linear-gradient(90deg, #666 0%, #888 50%, #666 100%);
+            border-radius: 7px;
+            box-shadow: 
+                0 0 10px rgba(0,0,0,0.8),
+                inset 0 0 5px rgba(255,255,255,0.3);
+        }
+
+        .door-left-real .door-handle-real {
+            right: 40px;
+        }
+
+        .door-right-real .door-handle-real {
+            left: 40px;
+        }
+
+        /* Контент */
+        .content {
+            position: relative;
+            text-align: center;
+            z-index: 10;
+            padding: 50px;
+            background: rgba(10, 10, 10, 0.95);
+            border-radius: 15px;
+            box-shadow: 
+                0 0 60px rgba(59, 130, 246, 0.4),
+                inset 0 0 20px rgba(59, 130, 246, 0.1);
+            max-width: 700px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        h1 {
+            color: #60a5fa;
+            font-size: 3.5em;
+            margin-bottom: 25px;
+            text-shadow: 0 0 30px rgba(96, 165, 250, 0.7);
+            animation: glow 2s ease-in-out infinite alternate;
+            font-weight: bold;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 30px rgba(96, 165, 250, 0.7); }
+            to { text-shadow: 0 0 40px rgba(96, 165, 250, 1), 0 0 50px rgba(96, 165, 250, 0.8); }
+        }
+
+        p {
+            color: #e2e8f0;
+            font-size: 1.4em;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .icon {
+            font-size: 5em;
+            margin-bottom: 25px;
+            animation: rotate 3s linear infinite;
+            color: #60a5fa;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.8);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+            color: white;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 35px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+        }
+
+        .timer {
+            font-size: 1.3em;
+            color: #fbbf24;
+            margin-top: 25px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        /* QR код контейнер */
+        .qr-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .qr-text {
+            color: #333;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Анимация открытия дверей */
+        .doors-open .door-left-real {
+            transform: rotateY(-95deg);
+        }
+
+        .doors-open .door-right-real {
+            transform: rotateY(95deg);
+        }
+
+        /* Эффект освещения */
+        .light-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 100%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .qr-container {
+                bottom: 20px;
+                right: 20px;
+                padding: 15px;
+            }
+            .qr-code {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фон с дверями -->
+    <div class="doors-background"></div>
+    
+    <!-- Эффект освещения -->
+    <div class="light-effect"></div>
+    
+    <!-- Реалистичные двери -->
+    <div class="realistic-doors" id="realisticDoors">
+        <div class="door-real door-left-real">
+            <div class="door-handle-real"></div>
+        </div>
+        <div class="door-real door-right-real">
+            <div class="door-handle-real"></div>
+        </div>
+    </div>
+
+    <!-- Контент -->
+    <div class="content">
+        <div class="icon">⚙️</div>
+        <h1>ТЕХНИЧЕСКИЕ РАБОТЫ</h1>
+        <p>Уважаемые посетители! В данный момент на сайте проводятся технические работы.</p>
+        <p>Мы стараемся стать лучше для вас и вскоре откроемся с новыми возможностями!</p>
+        <div class="timer" id="timer">Осталось времени: 24:00:00</div>
+        <button class="btn" onclick="openDoors()">ОТКРЫТЬ ДВЕРИ</button>
+    </div>
+
+    <!-- QR код -->
+    <div class="qr-container">
+        <div class="qr-code">
+            <svg width="150" height="150" viewBox="0 0 33 33" shape-rendering="crispEdges">
+                <path fill="#ffffff" d="M0 0h33v33H0z"/>
+                <path fill="#000000" d="M4 4h7v7H4z M16 4h3v1h-3z M20 4h3v1h-3z M24 4h5v5h-5z M4 11h1v3h-1z M12 11h1v1h-1z M14 11h1v3h-1z M18 11h1v1h-1z M22 11h1v1h-1z M24 11h1v1h-1z M26 11h1v3h-1z M4 15h3v1h-3z M8 15h1v1h-1z M10 15h1v1h-1z M12 15h3v1h-3z M18 15h1v1h-1z M20 15h1v1h-1z M24 15h1v1h-1z M28 15h1v1h-1z M4 19h1v3h-1z M8 19h1v1h-1z M12 19h1v3h-1z M16 19h1v1h-1z M18 19h3v1h-3z M24 19h1v1h-1z M26 19h1v1h-1z M30 19h1v3h-1z M4 24h7v7h-7z M14 24h1v1h-1z M20 24h1v1h-1z M24 24h1v1h-1z M28 24h1v1h-1z M12 26h1v1h-1z M16 26h1v1h-1z M18 26h1v1h-1z M20 26h1v1h-1z M22 26h1v1h-1z M24 26h1v1h-1z M26 26h1v1h-1z M14 28h1v1h-1z M16 28h1v1h-1z M20 28h1v1h-1z M22 28h1v1h-1z M24 28h1v1h-1z M26 28h1v1h-1z M28 28h1v1h-1z M4 30h1v1h-1z M10 30h1v1h-1z M12 30h1v1h-1z M14 30h1v1h-1z M16 30h1v1h-1z M18 30h1v1h-1z M20 30h1v1h-1z M22 30h1v1h-1z M24 30h1v1h-1z M26 30h1v1h-1z M28 30h1v1h-1z"/>
+                <path fill="#0000ff" d="M15 7h1v1h-1z M19 7h1v1h-1z M23 7h1v1h-1z M8 8h1v1h-1z M10 8h1v1h-1z M12 8h1v1h-1z M16 8h1v1h-1z M18 8h1v1h-1z M20 8h1v1h-1z M22 8h1v1h-1z M24 8h1v1h-1z M26 8h1v1h-1z M28 8h1v1h-1z M30 8h1v1h-1z M6 9h1v1h-1z M8 9h1v1h-1z M10 9h1v1h-1z M12 9h1v1h-1z M14 9h1v1h-1z M16 9h1v1h-1z M18 9h1v1h-1z M20 9h1v1h-1z M22 9h1v1h-1z M24 9h1v1h-1z M26 9h1v1h-1z M28 9h1v1h-1z M30 9h1v1h-1z M6 10h1v1h-1z M8 10h1v1h-1z M10 10h1v1h-1z M12 10h1v1h-1z M16 10h1v1h-1z M18 10h1v1h-1z M20 10h1v1h-1z M22 10h1v1h-1z M24 10h1v1h-1z M26 10h1v1h-1z M28 10h1v1h-1z M30 10h1v1h-1z M6 11h1v1h-1z M8 11h1v1h-1z M10 11h1v1h-1z M12 11h1v1h-1z M14 11h1v1h-1z M16 11h1v1h-1z M18 11h1v1h-1z M20 11h1v1h-1z M22 11h1v1h-1z M24 11h1v1h-1z M26 11h1v1h-1z M28 11h1v1h-1z M30 11h1v1h-1z M6 12h1v1h-1z M8 12h1v1h-1z M10 12h1v1h-1z M12 12h1v1h-1z M16 12h1v1h-1z M18 12h1v1h-1z M20 12h1v1h-1z M22 12h1v1h-1z M24 12h1v1h-1z M26 12h1v1h-1z M28 12h1v1h-1z M30 12h1v1h-1z M6 13h1v1h-1z M8 13h1v1h-1z M10 13h1v1h-1z M12 13h1v1h-1z M14 13h1v1h-1z M16 13h1v1h-1z M18 13h1v1h-1z M20 13h1v1h-1z M22 13h1v1h-1z M24 13h1v1h-1z M26 13h1v1h-1z M28 13h1v1h-1z M30 13h1v1h-1z M6 14h1v1h-1z M8 14h1v1h-1z M10 14h1v1h-1z M12 14h1v1h-1z M16 14h1v1h-1z M18 14h1v1h-1z M20 14h1v1h-1z M22 14h1v1h-1z M24 14h1v1h-1z M26 14h1v1h-1z M28 14h1v1h-1z M30 14h1v1h-1z M6 15h1v1h-1z M8 15h1v1h-1z M10 15h1v1h-1z M12 15h1v1h-1z M16 15h1v1h-1z M18 15h1v1h-1z M20 15h1v1h-1z M22 15h1v1h-1z M24 15h1v1h-1z M26 15h1v1h-1z M28 15h1v1h-1z M30 15h1v1h-1z M6 16h1v1h-1z M8 16h1v1h-1z M10 16h1v1h-1z M12 16h1v1h-1z M14 16h1v1h-1z M16 16h1v1h-1z M18 16h1v1h-1z M20 16h1v1h-1z M22 16h1v1h-1z M24 16h1v1h-1z M26 16h1v1h-1z M28 16h1v1h-1z M30 16h1v1h-1z M6 17h1v1h-1z M8 17h1v1h-1z M10 17h1v1h-1z M12 17h1v1h-1z M16 17h1v1h-1z M18 17h1v1h-1z M20 17h1v1h-1z M22 17h1v1h-1z M24 17h1v1h-1z M26 17h1v1h-1z M28 17h1v1h-1z M30 17h1v1h-1z M6 18h1v1h-1z M8 18h1v1h-1z M10 18h1v1h-1z M12 18h1v1h-1z M14 18h1v1h-1z M16 18h1v1h-1z M18 18h1v1h-1z M20 18h1v1h-1z M22 18h1v1h-1z M24 18h1v1h-1z M26 18h1v1h-1z M28 18h1v1h-1z M30 18h1v1h-1z M6 19h1v1h-1z M8 19h1v1h-1z M10 19h1v1h-1z M12 19h1v1h-1z M16 19h1v1h-1z M18 19h1v1h-1z M20 19h1v1h-1z M22 19h1v1h-1z M24 19h1v1h-1z M26 19h1v1h-1z M28 19h1v1h-1z M30 19h1v1h-1z M6 20h1v1h-1z M8 20h1v1h-1z M10 20h1v1h-1z M12 20h1v1h-1z M14 20h1v1h-1z M16 20h1v1h-1z M18 20h1v1h-1z M20 20h1v1h-1z M22 20h1v1h-1z M24 20h1v1h-1z M26 20h1v1h-1z M28 20h1v1h-1z M30 20h1v1h-1z M6 21h1v1h-1z M8 21h1v1h-1z M10 21h1v1h-1z M12 21h1v1h-1z M16 21h1v1h-1z M18 21h1v1h-1z M20 21h1v1h-1z M22 21h1v1h-1z M24 21h1v1h-1z M26 21h1v1h-1z M28 21h1v1h-1z M30 21h1v1h-1z M6 22h1v1h-1z M8 22h1v1h-1z M10 22h1v1h-1z M12 22h1v1h-1z M16 22h1v1h-1z M18 22h1v1h-1z M20 22h1v1h-1z M22 22h1v1h-1z M24 22h1v1h-1z M26 22h1v1h-1z M28 22h1v1h-1z M30 22h1v1h-1z M6 23h1v1h-1z M8 23h1v1h-1z M10 23h1v1h-1z M12 23h1v1h-1z M14 23h1v1h-1z M16 23h1v1h-1z M18 23h1v1h-1z M20 23h1v1h-1z M22 23h1v1h-1z M24 23h1v1h-1z M26 23h1v1h-1z M28 23h1v1h-1z M30 23h1v1h-1z M6 24h1v1h-1z M8 24h1v1h-1z M10 24h1v1h-1z M12 24h1v1h-1z M16 24h1v1h-1z M18 24h1v1h-1z M20 24h1v1h-1z M22 24h1v1h-1z M24 24h1v1h-1z M26 24h1v1h-1z M28 24h1v1h-1z M30 24h1v1h-1z M6 25h1v1h-1z M8 25h1v1h-1z M10 25h1v1h-1z M12 25h1v1h-1z M16 25h1v1h-1z M18 25h1v1h-1z M20 25h1v1h-1z M22 25h1v1h-1z M24 25h1v1h-1z M26 25h1v1h-1z M28 25h1v1h-1z M30 25h1v1h-1z M6 26h1v1h-1z M8 26h1v1h-1z M10 26h1v1h-1z M12 26h1v1h-1z M14 26h1v1h-1z M16 26h1v1h-1z M18 26h1v1h-1z M20 26h1v1h-1z M22 26h1v1h-1z M24 26h1v1h-1z M26 26h1v1h-1z M28 26h1v1h-1z M30 26h1v1h-1z M6 27h1v1h-1z M8 27h1v1h-1z M10 27h1v1h-1z M12 27h1v1h-1z M16 27h1v1h-1z M18 27h1v1h-1z M20 27h1v1h-1z M22 27h1v1h-1z M24 27h1v1h-1z M26 27h1v1h-1z M28 27h1v1h-1z M30 27h1v1h-1z M6 28h1v1h-1z M8 28h1v1h-1z M10 28h1v1h-1z M12 28h1v1h-1z M16 28h1v1h-1z M18 28h1v1h-1z M20 28h1v1h-1z M22 28h1v1h-1z M24 28h1v1h-1z M26 28h1v1h-1z M28 28h1v1h-1z M30 28h1v1h-1z"/>
+            </svg>
+        </div>
+        <div class="qr-text">Наше сообщество ВКонтакте</div>
+    </div>
+
+    <script>
+        // Таймер обратного отсчета
+        let timeLeft = 24 * 60 * 60; // 24 часа в секундах
+        
+        function updateTimer() {
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            
+            document.getElementById('timer').textContent = 
+                `Осталось времени: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                document.getElementById('timer').textContent = 'Скоро откроемся!';
+            }
+        }
+        
+        setInterval(updateTimer, 1000);
+        
+        // Анимация открытия дверей
+        function openDoors() {
+            document.body.classList.add('doors-open');
+            setTimeout(() => {
+                alert('Двери открыты! Но сайт всё ещё в разработке... 🔧');
+            }, 3000);
+        }
+        
+        // Автоматическое открытие дверей через 15 секунд
+        setTimeout(() => {
+            openDoors();
+        }, 15000);
+
+        // Переход по ссылке при клике на QR код
+        document.querySelector('.qr-container').addEventListener('click', function() {
+            window.open('https://vk.com/kupidveri29?from=groups', '_blank');
+        });
+    </script>
+</body>
+</html>
+```
